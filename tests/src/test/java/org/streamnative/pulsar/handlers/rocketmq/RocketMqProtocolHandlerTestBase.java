@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,7 @@ import org.apache.zookeeper.MockZooKeeper;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.mockito.Mockito;
+import org.testng.collections.Sets;
 
 /**
  * Unit test to test RoP handler.
@@ -122,9 +125,9 @@ public abstract class RocketMqProtocolHandlerTestBase {
         }
     };
 
-//    public RocketMqProtocolHandlerTestBase() {
-//        resetConfig();
-//    }
+    public RocketMqProtocolHandlerTestBase() {
+        resetConfig();
+    }
 
     public static MockZooKeeper createMockZooKeeper() throws Exception {
         MockZooKeeper zk = MockZooKeeper.newInstance(MoreExecutors.newDirectExecutorService());
@@ -178,43 +181,43 @@ public abstract class RocketMqProtocolHandlerTestBase {
         return sb.toString();
     }
 
-//    protected void resetConfig() {
-//        RocketMQServiceConfiguration serviceConfiguration = new RocketMQServiceConfiguration();
-//        serviceConfiguration.setAdvertisedAddress("localhost");
-//        serviceConfiguration.setClusterName(configClusterName);
-//
-//        serviceConfiguration.setManagedLedgerCacheSizeMB(8);
-//        serviceConfiguration.setActiveConsumerFailoverDelayTimeMillis(0);
-//        serviceConfiguration.setDefaultRetentionTimeInMinutes(7);
-//        serviceConfiguration.setDefaultNumberOfNamespaceBundles(1);
-//        serviceConfiguration.setZookeeperServers("localhost:2181");
-//        serviceConfiguration.setConfigurationStoreServers("localhost:3181");
-//
-//        serviceConfiguration.setAuthenticationEnabled(false);
-//        serviceConfiguration.setAuthorizationEnabled(false);
-//        serviceConfiguration.setAllowAutoTopicCreation(true);
-//        serviceConfiguration.setAllowAutoTopicCreationType("partitioned");
-//        serviceConfiguration.setBrokerDeleteInactiveTopicsEnabled(false);
-//
-//        // set protocol related config
-//        URL testHandlerUrl = this.getClass().getClassLoader().getResource("test-protocol-handler.nar");
-//        Path handlerPath;
-//        try {
-//            handlerPath = Paths.get(testHandlerUrl.toURI());
-//        } catch (Exception e) {
-//            log.error("failed to get handler Path, handlerUrl: {}. Exception: ", testHandlerUrl, e);
-//            return;
-//        }
-//
-//        String protocolHandlerDir = handlerPath.toFile().getParent();
-//
-//        serviceConfiguration.setProtocolHandlerDirectory(
-//                protocolHandlerDir
-//        );
-//        serviceConfiguration.setMessagingProtocols(Sets.newHashSet("rocketmq"));
-//
-//        this.conf = serviceConfiguration;
-//    }
+    protected void resetConfig() {
+        RocketMQServiceConfiguration serviceConfiguration = new RocketMQServiceConfiguration();
+        serviceConfiguration.setAdvertisedAddress("localhost");
+        serviceConfiguration.setClusterName(configClusterName);
+
+        serviceConfiguration.setManagedLedgerCacheSizeMB(8);
+        serviceConfiguration.setActiveConsumerFailoverDelayTimeMillis(0);
+        serviceConfiguration.setDefaultRetentionTimeInMinutes(7);
+        serviceConfiguration.setDefaultNumberOfNamespaceBundles(1);
+        serviceConfiguration.setZookeeperServers("localhost:2181");
+        serviceConfiguration.setConfigurationStoreServers("localhost:3181");
+
+        serviceConfiguration.setAuthenticationEnabled(false);
+        serviceConfiguration.setAuthorizationEnabled(false);
+        serviceConfiguration.setAllowAutoTopicCreation(true);
+        serviceConfiguration.setAllowAutoTopicCreationType("partitioned");
+        serviceConfiguration.setBrokerDeleteInactiveTopicsEnabled(false);
+
+        // set protocol related config
+        URL testHandlerUrl = this.getClass().getClassLoader().getResource("test-protocol-handler.nar");
+        Path handlerPath;
+        try {
+            handlerPath = Paths.get(testHandlerUrl.toURI());
+        } catch (Exception e) {
+            log.error("failed to get handler Path, handlerUrl: {}. Exception: ", testHandlerUrl, e);
+            return;
+        }
+
+        String protocolHandlerDir = handlerPath.toFile().getParent();
+
+        serviceConfiguration.setProtocolHandlerDirectory(
+                protocolHandlerDir
+        );
+        serviceConfiguration.setMessagingProtocols(Sets.newHashSet("rocketmq"));
+
+        this.conf = serviceConfiguration;
+    }
 
     protected final void internalSetup() throws Exception {
         init();
@@ -325,7 +328,7 @@ public abstract class RocketMqProtocolHandlerTestBase {
             brokerWebServicePortTlsList.add(brokerWebServicePortTls);
 
             conf.setBrokerServicePort(Optional.of(brokerPort));
-//            ((RocketMQServiceConfiguration) conf).setRocketmqListeners("rocketmq://127.0.0.1:" + rocketmqBrokerPort);
+            ((RocketMQServiceConfiguration) conf).setRocketmqListeners("rocketmq://127.0.0.1:" + rocketmqBrokerPort);
             conf.setWebServicePort(Optional.of(brokerWebServicePort));
             conf.setWebServicePortTls(Optional.of(brokerWebServicePortTls));
 
